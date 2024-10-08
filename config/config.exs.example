@@ -1,6 +1,9 @@
 import Config
 
 config :nostrum,
-  token: "YOUR_BOT_TOKEN",
+  token: <DISCORD_TOKEN>,
   ffmpeg: nil,
   gateway_intents: [:guilds, :guild_messages, :message_content]
+
+config :discord_bot, :nasa,
+  api_key: <NASA_TOKEN>
