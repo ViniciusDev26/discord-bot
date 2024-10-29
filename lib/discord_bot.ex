@@ -8,7 +8,7 @@ defmodule DiscordBot do
       ["!ping"] -> Api.create_message(msg.channel_id, "pong!")
       ["!cep", cep] -> get_cep_information(cep, msg.channel_id)
       ["!github", username] -> get_user_information(username, msg.channel_id)
-      ["!github-repos", username] -> get_repos_information(username, msg.channel_id)
+      ["!joke"] -> get_joke(msg.channel_id)
       ["!random-anime"] -> get_random_anime(msg.channel_id)
       ["!nasa-today-image"] -> nasa_today_image(msg.channel_id)
       _ -> :ignore
@@ -30,19 +30,9 @@ defmodule DiscordBot do
     """
   end
 
-  defp format_repos_information(username, data) do
-    message = Enum.map(data, fn repo ->
-      """
-      Name: #{repo["name"]}
-      Description: #{repo["description"]}
-      URL: #{repo["html_url"]}
-      """
-    end) |> Enum.slice(0, 5) |> Enum.join("\n")
-
+  defp format_joke_message(data) do
     """
-      USER: #{username} \n
-    REPOS:
-    #{message}
+    JOKE: #{data["value"]}
     """
   end
 
@@ -69,9 +59,9 @@ defmodule DiscordBot do
     end
   end
 
-  defp get_repos_information(username, channel_id) do
-    case GithubClient.get_repos(username) do
-      {:ok, data} -> format_repos_information(username, data) |> send_message(channel_id)
+  defp get_joke(channel_id) do
+    case ChucknorrisClient.get_joke() do
+      {:ok, data} -> format_joke_message(data) |> send_message(channel_id)
       {:error, reason} -> IO.puts("Error: #{reason}")
     end
   end
